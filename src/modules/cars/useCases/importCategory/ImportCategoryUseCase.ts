@@ -18,6 +18,7 @@ class ImportCategoryUseCase {
       const parseFile = csvParse();
 
       stream.pipe(parseFile);
+
       parseFile
         .on('data', async line => {
           const [name, description] = line;
