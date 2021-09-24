@@ -13,16 +13,13 @@ class User {
   email: string;
 
   @Column()
-  username: string;
-
-  @Column()
   password: string;
 
   @Column()
   driver_license: string;
 
   @Column()
-  idAdmin: boolean;
+  isAdmin: boolean;
 
   @CreateDateColumn()
   created_at: Date;
