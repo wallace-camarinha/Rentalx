@@ -12,7 +12,7 @@ export async function ensureAuth(
   request: Request,
   response: Response,
   next: NextFunction,
-): Promise<Response> {
+): Promise<void> {
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
@@ -42,5 +42,4 @@ export async function ensureAuth(
   } catch {
     throw new AppError('Invalid token!', 401);
   }
-  return response.send();
 }
