@@ -9,11 +9,11 @@ import { rentalRoutes } from './rental.routes';
 
 const router = Router();
 
-router.use(authRoutes);
 router.use('/categories', categoriesRoutes);
 router.use('/specifications', specificationsRoutes);
 router.use('/users', usersRoutes);
 router.use('/cars', carsRoutes);
 router.use('/rentals', rentalRoutes);
+router.use(authRoutes);
 
 export { router };
