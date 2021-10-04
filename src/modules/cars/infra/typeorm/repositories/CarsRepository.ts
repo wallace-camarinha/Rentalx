@@ -79,6 +79,17 @@ class CarsRepository implements ICarsRepository {
 
     return car;
   }
+
+  async updateStatus(id: string, available: boolean): Promise<void> {
+    // throw new Error('Method not implemented.');
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ available })
+      .where('id = :id')
+      .setParameters({ id })
+      .execute();
+  }
 }
 
 export { CarsRepository };
