@@ -25,7 +25,7 @@ class CarsRepositoryInMemory implements ICarsRepository {
       fine_amount,
       name,
       license_plate,
-      id,
+      id: id || car.id,
     });
 
     this.cars.push(car);
