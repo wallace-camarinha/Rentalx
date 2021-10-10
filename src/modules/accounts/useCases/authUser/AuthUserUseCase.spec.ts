@@ -36,12 +36,12 @@ describe('AuthUser', () => {
   });
 
   it('Should not be able to authenticate an nonexisting user', async () => {
-    await expect(async () => {
-      await authUserUseCase.execute({
+    await expect(
+      authUserUseCase.execute({
         email: 'nonexisting@email.com',
         password: 'nonexisting',
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      }),
+    ).rejects.toEqual(new AppError('Email/Password incorrect!'));
   });
 
   it('Should not be able to authenticate a user with the wrong password', async () => {
@@ -54,11 +54,11 @@ describe('AuthUser', () => {
 
     await createUserUseCase.execute(user);
 
-    await expect(async () => {
-      await authUserUseCase.execute({
+    await expect(
+      authUserUseCase.execute({
         email: user.email,
         password: 'nonexisting',
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      }),
+    ).rejects.toEqual(new AppError('Email/Password incorrect!'));
   });
 });

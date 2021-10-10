@@ -3,9 +3,10 @@ import { Rental } from '../infra/typeorm/entities/Rental';
 
 interface IRentalsRepository {
   create(rentalData: ICreateRentalDTO): Promise<Rental>;
-  findOpenRentalByCar(car_id: string): Promise<Rental>;
-  findOpenRentalByUser(user_id: string): Promise<Rental>;
-  findById(rental_id: string): Promise<Rental>;
+  findOpenRentalByCar(carId: string): Promise<Rental>;
+  findOpenRentalByUser(userId: string): Promise<Rental>;
+  findById(rentalId: string): Promise<Rental>;
+  findByUser(userId: string): Promise<Rental[]>;
 }
 
 export { IRentalsRepository };

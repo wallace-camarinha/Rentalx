@@ -31,20 +31,21 @@ describe('CreteCategory', () => {
   });
 
   it('Should not be able create a new category with an already used name', async () => {
-    await expect(async () => {
-      const category = {
-        name: 'Test Category',
-        description: 'Category description test',
-      };
-      await createCategoryUseCase.execute({
-        name: category.name,
-        description: category.description,
-      });
+    const category = {
+      name: 'Test Category',
+      description: 'Category description test',
+    };
 
-      await createCategoryUseCase.execute({
+    await createCategoryUseCase.execute({
+      name: category.name,
+      description: category.description,
+    });
+
+    await expect(
+      createCategoryUseCase.execute({
         name: category.name,
         description: category.description,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+      }),
+    ).rejects.toEqual(new AppError('Category already exists!'));
   });
 });
