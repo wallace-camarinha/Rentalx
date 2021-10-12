@@ -14,8 +14,8 @@ describe('Create Category Controller', () => {
 
   afterAll(async () => {
     await connection.dropDatabase();
-
     await connection.close();
+
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
   });
 

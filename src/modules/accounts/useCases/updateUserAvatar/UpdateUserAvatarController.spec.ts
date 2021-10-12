@@ -4,13 +4,23 @@ import { v4 as uuid } from 'uuid';
 import { hash } from 'bcryptjs';
 
 import { app } from '@shared/infra/http/app';
+import path from 'path';
+
 import createConnection from '@shared/infra/typeorm';
+
+const filePath = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  '..',
+  'tmp/avatar/img.jpg',
+);
 
 let connection: Connection;
 
 describe('Create Category Controller', () => {
-  // jest.setTimeout(10000);
-
   beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations();
@@ -31,7 +41,7 @@ describe('Create Category Controller', () => {
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
   });
 
-  it('Should be able to create a new category', async () => {
+  it("Should be able to update the user's avatar", async () => {
     const responseToken = await request(app).post('/sessions').send({
       email: 'admin@rentx.com',
       password: 'admin',
@@ -40,36 +50,11 @@ describe('Create Category Controller', () => {
     const { token } = responseToken.body;
 
     const response = await request(app)
-      .post('/categories')
-      .send({
-        name: 'Category Supertest',
-        description: 'Category Supertest',
-      })
-      .set({
-        Authorization: `Bearer ${token}`,
-      });
+      .patch('/users/avatar')
+      .set('Content-Type', 'multipart/form-data')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('avatar', filePath);
 
-    expect(response.status).toBe(201);
-  });
-
-  it('Should not be able create a new category with an already used name', async () => {
-    const responseToken = await request(app).post('/sessions').send({
-      email: 'admin@rentx.com',
-      password: 'admin',
-    });
-
-    const { token } = responseToken.body;
-
-    const response = await request(app)
-      .post('/categories')
-      .send({
-        name: 'Category Supertest',
-        description: 'Category Supertest',
-      })
-      .set({
-        Authorization: `Bearer ${token}`,
-      });
-
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(204);
   });
 });
