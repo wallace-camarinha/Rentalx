@@ -8,9 +8,7 @@ import createConnection from '@shared/infra/typeorm';
 
 let connection: Connection;
 
-describe('List Category Controller', () => {
-  // jest.setTimeout(10000);
-
+describe('Create Category Controller', () => {
   beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations();
@@ -31,29 +29,50 @@ describe('List Category Controller', () => {
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
   });
 
-  it('Should be able to list all categories', async () => {
+  it('Should be able to create a new car specification', async () => {
     const responseToken = await request(app).post('/sessions').send({
       email: 'admin@rentx.com',
       password: 'admin',
     });
-
     const { token } = responseToken.body;
 
-    await request(app)
-      .post('/categories')
+    const responseCar = await request(app)
+      .post('/cars')
       .send({
-        name: 'Category Supertest',
-        description: 'Category Supertest',
+        name: 'Create Car Test',
+        description: 'Create Car Test',
+        brand: 'Test Brand',
+        daily_rate: 100,
+        fine_amount: 50,
+        license_plate: 'TEST01',
+      })
+      .set({
+        Authorization: `Bearer ${token}`,
+      });
+    const car = responseCar.body;
+
+    const specificationResponse = await request(app)
+      .post('/specifications')
+      .send({
+        name: 'Specification Test',
+        description: 'Specification Test',
       })
       .set({
         Authorization: `Bearer ${token}`,
       });
 
-    const response = await request(app).get('/categories');
+    const specification = specificationResponse.body;
+
+    const response = await request(app)
+      .post(`/cars/${car.id}/specifications`)
+      .send({
+        specifications_ids: [specification.id],
+      })
+      .set({
+        Authorization: `Bearer ${token}`,
+      });
 
     expect(response.status).toBe(200);
-    expect(response.body.length).toBe(1);
-    expect(response.body[0]).toHaveProperty('id');
-    expect(response.body[0].name).toEqual('Category Supertest');
+    expect(response.body.specifications.length).toBe(1);
   });
 });
