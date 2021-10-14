@@ -1,13 +1,13 @@
 import { inject, injectable } from 'tsyringe';
 
 import { Rental } from '@modules/rentals/infra/typeorm/entities/Rental';
-import { RentalsRepository } from '@modules/rentals/infra/typeorm/repositories/RentalsRepository';
+import { IRentalsRepository } from '@modules/rentals/repositories/IRentalsRepository';
 
 @injectable()
 class ListRentalsByUserUseCase {
   constructor(
     @inject('RentalsRepository')
-    private rentalsRepository: RentalsRepository,
+    private rentalsRepository: IRentalsRepository,
   ) {}
 
   async execute(userId: string): Promise<Rental[]> {
