@@ -4,176 +4,16 @@
     "title": "Rentx",
     "description": "This is an API Rent",
     "version": "1.0.0",
-    "contact": "wall@test.com"
+    "contact": {
+      "email": "wall@test.com"
+    }
   },
   "paths": {
-    "/categories": {
-      "post": {
-        "tags": ["Category"],
-        "summary": "Create a category",
-        "description": "Create a new category",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  }
-                },
-                "example": {
-                  "name": "Category name sample",
-                  "description": "category description sample"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Category already exists"
-          }
-        }
-      },
-      "get": {
-        "tags": ["Category"],
-        "summary": "List all categories",
-        "description": "List all categories",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "description": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/categories/import": {
-      "post": {
-        "tags": ["Category"],
-        "summary": "Upload new category",
-        "description": "Upload new category",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/specifications": {
-      "post": {
-        "tags": ["Specifications"],
-        "summary": "Create a specification",
-        "description": "Create a new specification",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/definitions/Specification"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Specification already exists!"
-          }
-        }
-      }
-    },
-    "/sessions": {
-      "post": {
-        "tags": ["Session"],
-        "summary": "Authenticates User",
-        "description": "Authenticates the user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Email/Password incorrect!"
-          }
-        }
-      }
-    },
     "/cars": {
       "post": {
         "tags": ["Cars"],
         "summary": "Creates a new car",
-        "description": "Creates a new car",
+        "description": "This route is used to create a new car registry in the database",
         "security": [
           {
             "bearerAuth": []
@@ -183,7 +23,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/definitions/Car"
+                "$ref": "#/components/schemas/Car"
               }
             }
           }
@@ -194,6 +34,28 @@
           },
           "400": {
             "description": "Car already exists!"
+          }
+        }
+      }
+    },
+    "/cars/available": {
+      "get": {
+        "tags": ["Cars"],
+        "summary": "List all available cars",
+        "description": "This route returns a list of all available cars",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Car"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -243,52 +105,352 @@
           }
         }
       }
-    }
-  },
-  "definitions": {
-    "Specification": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
+    },
+    "/categories": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Create a category",
+        "description": "Creates a new category on the database.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name", "description"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Awesome Category",
+                  "description": "This car is awesome"
+                }
+              }
+            }
+          }
         },
-        "description": {
-          "type": "string"
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Category already exists!"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "List all categories",
+        "description": "List all categories",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/import": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Upload new categories from a file",
+        "description": "Upload new categories from a file (.csv)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["file"],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/specifications": {
+      "post": {
+        "tags": ["Specifications"],
+        "summary": "Create a specification",
+        "description": "Create a new specification",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Specification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Specification already exists!"
+          }
+        }
+      }      
+    },
+    "/cars/{id}/specifications": {
+      "post": {
+        "tags": ["Specifications"],
+        "summary": "Add specifications to a car",
+        "description": "This route adds one or more specifications to a car",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["specifications_ids"],
+                "type": "object",
+                "properties": {
+                  "specifications_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "specifications_ids": [
+                    "57741ac0-73ae-4119-838d-e7def302e0a4",
+                    "7b866fbc-197b-434c-9a3f-971894caee90"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Car does not exist!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Authenticates User",
+        "description": "This route is used to create a new session, authenticating the user" ,
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Email/Password incorrect!"
+          }
+        }
+      }
+    },
+    "/refresh-token": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh Token",
+        "description": "This route is used to refresh a session's token, keeping the user authenticated" ,
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Refresh token not found!"
+          }
+        }
+      }
+    } 
+  },
+  "components": {
+    "schemas": {
+      "Car": {
+        "type": "object",
+        "required": ["name", "description", "daily_rate", "license_plate", "fine_amount", "brand", "category_id"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "daily_rate": {
+            "type": "number"
+          },
+          "license_plate": {
+            "type": "string"
+          },
+          "fine_amount": {
+            "type": "number"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a48f892d-daee-415d-9e75-0986d36b59b0"
+          },
+          "name": {
+            "type": "string",
+            "example": "Awesome Category"
+          },
+          "description": {
+            "type": "string",
+            "example": "This car is awesome"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-10-31T00:07:31.651Z"
+          }
+        }
+      },
+      "Specification": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+        
       }
       
     },
-    "Car": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "daily_rate": {
-          "type": "number"
-        },
-        "license_plate": {
-          "type": "string"
-        },
-        "fine_amount": {
-          "type": "number"
-        },
-        "brand": {
-          "type": "string"
-        },
-        "category_id": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  "components": {
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
+        "description": "Enter a JWT Bearer token **_only_**",
         "scheme": "bearer",
         "bearerFormat": "jwt"
       }
